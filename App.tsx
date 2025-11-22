@@ -115,10 +115,10 @@ const App: React.FC = () => {
         toggleTheme={() => setIsDarkMode(!isDarkMode)} 
       />
 
-      <main className="flex-grow w-full px-4 py-8">
+      <main className="flex-grow w-full px-2 py-8">
         
         {/* Inputs Container - Centered with max width */}
-        <div className="max-w-3xl mx-auto space-y-8 mb-12">
+        <div className="max-w-3xl mx-auto space-y-8 mb-12 px-2">
           
           {/* Brand Manager Section */}
           <section>
@@ -154,8 +154,8 @@ const App: React.FC = () => {
           </section>
         </div>
 
-        {/* Output Container - Full Width */}
-        <div ref={resultRef} className="w-full max-w-6xl mx-auto">
+        {/* Output Container - Full Width (99%) */}
+        <div ref={resultRef} className="w-full max-w-[99%] mx-auto">
           {generatedContent ? (
             <div className="animate-slide-up">
               <OutputDisplay 

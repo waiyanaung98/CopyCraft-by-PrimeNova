@@ -52,7 +52,11 @@ export const OutputDisplay: React.FC<OutputDisplayProps> = ({ content, currentUi
           </button>
         </div>
       </div>
-      <div className={`p-8 max-h-[600px] overflow-y-auto prose prose-slate dark:prose-invert prose-sm md:prose-base max-w-none ${fontClass}`}>
+      {/* 
+        Standard prose size (prose-base) used to keep text normal size.
+        max-w-none ensures it fills the 99% container width.
+      */}
+      <div className={`p-8 min-h-[75vh] prose prose-slate dark:prose-invert prose-base max-w-none ${fontClass}`}>
          <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </div>
