@@ -115,73 +115,72 @@ const App: React.FC = () => {
         toggleTheme={() => setIsDarkMode(!isDarkMode)} 
       />
 
-      <main className="flex-grow max-w-5xl mx-auto px-4 py-8 w-full">
+      <main className="flex-grow w-full px-4 py-8">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Inputs Container - Centered with max width */}
+        <div className="max-w-3xl mx-auto space-y-8 mb-12">
           
-          {/* Left Column: Controls */}
-          <div className="lg:col-span-5 space-y-6">
-            
-            {/* Brand Manager Section */}
-            <section>
-              <BrandManager 
-                brands={brands}
-                selectedBrandId={selectedBrandId}
-                onSelectBrand={setSelectedBrandId}
-                onAddBrand={handleAddBrand}
-                onDeleteBrand={handleDeleteBrand}
-                currentLang={uiLanguage}
-              />
-            </section>
+          {/* Brand Manager Section */}
+          <section>
+            <BrandManager 
+              brands={brands}
+              selectedBrandId={selectedBrandId}
+              onSelectBrand={setSelectedBrandId}
+              onAddBrand={handleAddBrand}
+              onDeleteBrand={handleDeleteBrand}
+              currentLang={uiLanguage}
+            />
+          </section>
 
-            {/* Framework Selection */}
-            <section>
-              <FrameworkSelector 
-                selected={formData.framework} 
-                onSelect={(fw) => setFormData(prev => ({ ...prev, framework: fw }))}
-                currentLang={uiLanguage}
-              />
-            </section>
+          {/* Framework Selection */}
+          <section>
+            <FrameworkSelector 
+              selected={formData.framework} 
+              onSelect={(fw) => setFormData(prev => ({ ...prev, framework: fw }))}
+              currentLang={uiLanguage}
+            />
+          </section>
 
-            {/* Input Form */}
-            <section>
-              <InputForm 
-                request={formData} 
-                onChange={setFormData} 
-                onSubmit={handleGenerate}
-                isLoading={loading}
-                currentUiLang={uiLanguage}
-                selectedBrand={brands.find(b => b.id === selectedBrandId)}
-              />
-            </section>
-          </div>
+          {/* Input Form */}
+          <section>
+            <InputForm 
+              request={formData} 
+              onChange={setFormData} 
+              onSubmit={handleGenerate}
+              isLoading={loading}
+              currentUiLang={uiLanguage}
+              selectedBrand={brands.find(b => b.id === selectedBrandId)}
+            />
+          </section>
+        </div>
 
-          {/* Right Column: Output */}
-          <div className="lg:col-span-7" ref={resultRef}>
-            {generatedContent ? (
+        {/* Output Container - Full Width */}
+        <div ref={resultRef} className="w-full max-w-6xl mx-auto">
+          {generatedContent ? (
+            <div className="animate-slide-up">
               <OutputDisplay 
                 content={generatedContent} 
                 currentUiLang={uiLanguage}
                 outputLang={formData.language}
                 onClear={handleClear}
               />
-            ) : (
-              /* Empty State Placeholder */
-              <div className="h-full min-h-[400px] bg-white dark:bg-[#1E2A38] rounded-2xl border border-slate-200 dark:border-slate-700 border-dashed flex flex-col items-center justify-center text-center p-8 text-slate-400 dark:text-slate-500 sticky top-24 transition-colors">
-                <div className="w-16 h-16 bg-slate-50 dark:bg-[#0f172a] rounded-full flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-medium text-[#1E2A38] dark:text-white mb-2">Ready to Create</h3>
-                <p className="max-w-xs mx-auto text-sm text-slate-500 dark:text-slate-400">
-                  Select a framework, choose your <strong>Content Pillar</strong> and <strong>Language</strong>, and let the AI do the rest.
-                </p>
+            </div>
+          ) : (
+            /* Empty State Placeholder */
+            <div className="max-w-3xl mx-auto bg-white dark:bg-[#1E2A38] rounded-2xl border border-slate-200 dark:border-slate-700 border-dashed flex flex-col items-center justify-center text-center p-12 text-slate-400 dark:text-slate-500 transition-colors">
+              <div className="w-16 h-16 bg-slate-50 dark:bg-[#0f172a] rounded-full flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
               </div>
-            )}
-          </div>
-
+              <h3 className="text-lg font-medium text-[#1E2A38] dark:text-white mb-2">Ready to Create</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Generated content will appear here in full screen.
+              </p>
+            </div>
+          )}
         </div>
+
       </main>
       
       {/* Footer with Branding */}
