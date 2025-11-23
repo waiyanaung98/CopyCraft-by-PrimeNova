@@ -1,16 +1,36 @@
-import { Framework, Language, Tone, ContentPillar, TranslationResource, BrandProfile } from './types';
+import { Framework, Language, Tone, ContentPillar, TranslationResource, BrandProfile, AppMode } from './types';
 import { 
   Megaphone, 
   AlertCircle, 
   ArrowRight, 
   Gift, 
   HelpCircle, 
-  PenTool,
   Sparkles,
-  BookOpen
+  BookOpen,
+  Clapperboard,
+  Youtube,
+  Film,
+  ListVideo,
+  Mic
 } from 'lucide-react';
 
+export const MODE_LABELS: TranslationResource = {
+  [AppMode.COPYWRITING]: { [Language.EN]: 'Copywriting', [Language.MY]: 'ကြော်ငြာစာရေးရန်', [Language.TH]: 'เขียนคำโฆษณา' },
+  [AppMode.SCRIPTWRITING]: { [Language.EN]: 'Scriptwriting', [Language.MY]: 'ဗီဒီယိုဇာတ်ညွှန်းရေးရန်', [Language.TH]: 'เขียนบทวิดีโอ' }
+};
+
+export const COPY_FRAMEWORKS_LIST = [
+  Framework.AIDA, Framework.PAS, Framework.BAB, Framework.FAB, 
+  Framework.QUEST, Framework.FOUR_P, Framework.PASTOR, Framework.FREESTYLE
+];
+
+export const SCRIPT_FRAMEWORKS_LIST = [
+  Framework.HOOK_VALUE_CTA, Framework.HERO_JOURNEY, Framework.EXPLAINER, 
+  Framework.PROBLEM_SOLUTION_STORY, Framework.LISTICLE_VIDEO
+];
+
 export const FRAMEWORK_DETAILS = {
+  // --- COPYWRITING FRAMEWORKS ---
   [Framework.AIDA]: {
     title: 'AIDA Model',
     description: 'Attention, Interest, Desire, Action. The classic copywriting formula.',
@@ -50,6 +70,33 @@ export const FRAMEWORK_DETAILS = {
     title: 'Freestyle / Social',
     description: 'Creative, engaging posts for social media without a strict structure.',
     icon: Sparkles
+  },
+
+  // --- SCRIPTWRITING FRAMEWORKS ---
+  [Framework.HOOK_VALUE_CTA]: {
+    title: 'Hook-Value-CTA (Shorts)',
+    description: 'Fast-paced 15-60s script. Grab attention, deliver value, call to action.',
+    icon: Film
+  },
+  [Framework.HERO_JOURNEY]: {
+    title: 'Hero\'s Journey',
+    description: 'Classic storytelling: Call to adventure, challenges, and transformation.',
+    icon: Clapperboard
+  },
+  [Framework.EXPLAINER]: {
+    title: 'The Explainer',
+    description: 'What is it? Who is it for? How does it work? Why do you need it?',
+    icon: Youtube
+  },
+  [Framework.PROBLEM_SOLUTION_STORY]: {
+    title: 'VSL (Video Sales Letter)',
+    description: 'Detailed problem analysis, emotional story, and logical solution.',
+    icon: Mic
+  },
+  [Framework.LISTICLE_VIDEO]: {
+    title: 'Listicle / Top X',
+    description: 'Structured list format (e.g., "5 Ways to...") perfect for engagement.',
+    icon: ListVideo
   }
 };
 
@@ -59,7 +106,9 @@ export const TONE_LABELS: TranslationResource = {
   [Tone.URGENT]: { [Language.EN]: 'Urgent', [Language.MY]: 'အရေးကြီးသော', [Language.TH]: 'เร่งด่วน' },
   [Tone.WITTY]: { [Language.EN]: 'Witty', [Language.MY]: 'ဟာသဉာဏ်ရှိသော', [Language.TH]: 'ชาญฉลาด' },
   [Tone.EMOTIONAL]: { [Language.EN]: 'Emotional', [Language.MY]: 'ခံစားချက်ပါသော', [Language.TH]: 'มีอารมณ์ร่วม' },
-  [Tone.LUXURY]: { [Language.EN]: 'Luxury', [Language.MY]: 'ခန့်ညားထည်ဝါသော', [Language.TH]: 'หรูหรา' }
+  [Tone.LUXURY]: { [Language.EN]: 'Luxury', [Language.MY]: 'ခန့်ညားထည်ဝါသော', [Language.TH]: 'หรูหรา' },
+  [Tone.DRAMATIC]: { [Language.EN]: 'Dramatic', [Language.MY]: 'ဒရာမာဆန်သော', [Language.TH]: 'ดราม่า' },
+  [Tone.EXCITED]: { [Language.EN]: 'Excited', [Language.MY]: 'စိတ်လှုပ်ရှားဖွယ်', [Language.TH]: 'ตื่นเต้น' }
 };
 
 export const PILLAR_LABELS: TranslationResource = {
@@ -92,10 +141,20 @@ export const TRANSLATIONS = {
     [Language.MY]: 'အကြောင်းအရာခေါင်းစဉ်',
     [Language.TH]: 'หัวข้อคอนเทนต์'
   },
+  scriptTopic: {
+    [Language.EN]: 'Video Topic / Title',
+    [Language.MY]: 'ဗီဒီယို ခေါင်းစဉ်',
+    [Language.TH]: 'หัวข้อวิดีโอ'
+  },
   productDesc: {
     [Language.EN]: 'Product Details / Context',
     [Language.MY]: 'အကြောင်းအရာအသေးစိတ်',
     [Language.TH]: 'รายละเอียด'
+  },
+  scriptDesc: {
+    [Language.EN]: 'Key Points to Cover',
+    [Language.MY]: 'ပါဝင်ရမည့် အချက်အလက်များ',
+    [Language.TH]: 'ประเด็นสำคัญ'
   },
   tone: {
     [Language.EN]: 'Tone of Voice',
@@ -114,12 +173,12 @@ export const TRANSLATIONS = {
   },
   generateBtn: {
     [Language.EN]: 'Generate Content',
-    [Language.MY]: 'စာရေးပါ',
+    [Language.MY]: 'ဖန်တီးမည်',
     [Language.TH]: 'สร้างคอนเทนต์'
   },
   generating: {
-    [Language.EN]: 'Writing magic...',
-    [Language.MY]: 'ရေးသားနေပါသည်...',
+    [Language.EN]: 'Creating magic...',
+    [Language.MY]: 'ဖန်တီးနေပါသည်...',
     [Language.TH]: 'กำลังเขียน...'
   },
   resultTitle: {

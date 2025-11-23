@@ -4,6 +4,11 @@ export enum Language {
   TH = 'th'
 }
 
+export enum AppMode {
+  COPYWRITING = 'COPYWRITING',
+  SCRIPTWRITING = 'SCRIPTWRITING'
+}
+
 export enum Framework {
   // Body Copy Frameworks
   AIDA = 'AIDA',
@@ -13,7 +18,14 @@ export enum Framework {
   QUEST = 'QUEST',
   FOUR_P = 'FOUR_P',
   PASTOR = 'PASTOR',
-  FREESTYLE = 'FREESTYLE'
+  FREESTYLE = 'FREESTYLE',
+
+  // Scriptwriting Frameworks
+  HOOK_VALUE_CTA = 'HOOK_VALUE_CTA', // For Shorts/TikTok
+  HERO_JOURNEY = 'HERO_JOURNEY', // Storytelling
+  EXPLAINER = 'EXPLAINER', // Educational
+  PROBLEM_SOLUTION_STORY = 'PROBLEM_SOLUTION_STORY', // Video Sales Letter
+  LISTICLE_VIDEO = 'LISTICLE_VIDEO' // Top 10 style
 }
 
 export enum ContentPillar {
@@ -31,7 +43,9 @@ export enum Tone {
   URGENT = 'Urgent',
   WITTY = 'Witty',
   EMOTIONAL = 'Emotional',
-  LUXURY = 'Luxury'
+  LUXURY = 'Luxury',
+  DRAMATIC = 'Dramatic',
+  EXCITED = 'Excited'
 }
 
 export interface BrandProfile {
@@ -44,6 +58,7 @@ export interface BrandProfile {
 }
 
 export interface ContentRequest {
+  mode: AppMode;
   topic: string;
   description: string;
   framework: Framework;

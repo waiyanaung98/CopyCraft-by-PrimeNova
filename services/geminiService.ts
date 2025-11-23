@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { ContentRequest, Framework, Language, ContentPillar } from '../types';
+import { ContentRequest, Framework, Language, ContentPillar, AppMode } from '../types';
 
 // Initialize the client
 // @ts-ignore
@@ -9,6 +9,7 @@ const MODEL_NAME = 'gemini-2.5-flash';
 
 const getFrameworkInstruction = (framework: Framework): string => {
   switch (framework) {
+    // --- COPYWRITING ---
     case Framework.AIDA:
       return "Apply the AIDA framework:\n1. Attention: Grab attention with a hook.\n2. Interest: Build interest with facts/details.\n3. Desire: Create desire by showing benefits.\n4. Action: Clear Call to Action (CTA).";
     case Framework.PAS:
@@ -26,6 +27,18 @@ const getFrameworkInstruction = (framework: Framework): string => {
     case Framework.FREESTYLE:
       return "Create engaging, high-quality content optimized for social media or blogs. Use short paragraphs, emojis where appropriate, and a compelling structure.";
       
+    // --- SCRIPTWRITING ---
+    case Framework.HOOK_VALUE_CTA:
+      return "Create a Short Video Script (TikTok/Reels style, 15-60s):\n1. Hook (0-3s): Stop the scroll immediately.\n2. Value/Body: Deliver the core message quickly.\n3. CTA: Strong directive on what to do next.";
+    case Framework.HERO_JOURNEY:
+      return "Create a Storytelling Script (Hero's Journey):\n1. The Known World: Establish normality.\n2. The Inciting Incident: The problem/challenge.\n3. The Journey: Struggles and discovery of the solution.\n4. The Transformation: Life after the solution.";
+    case Framework.EXPLAINER:
+      return "Create an Explainer Video Script:\n1. The 'What': Briefly define the topic.\n2. The 'Why': Why it matters.\n3. The 'How': Step-by-step explanation.\n4. Key Takeaway/Summary.";
+    case Framework.PROBLEM_SOLUTION_STORY:
+      return "Create a Video Sales Letter (VSL) Script:\n1. Call out the audience.\n2. Describe their pain vividly.\n3. Tell a story of overcoming that pain using the solution.\n4. Present the offer clearly.";
+    case Framework.LISTICLE_VIDEO:
+      return "Create a Listicle Video Script (e.g., Top 5 Tips):\n- Intro: Hook the viewer.\n- Items: Numbered points (1, 2, 3...) with brief explanations.\n- Outro: Summary and CTA.";
+      
     default:
       return "";
   }
@@ -34,7 +47,7 @@ const getFrameworkInstruction = (framework: Framework): string => {
 const getLanguageInstruction = (language: Language): string => {
   switch (language) {
     case Language.MY:
-      return "Write the response in Myanmar (Burmese) language. Ensure the font encoding is standard Unicode. Use natural, flowing Burmese appropriate for marketing. Do NOT just transliterate English idioms, adapt them culturally.";
+      return "Write the response in Myanmar (Burmese) language. Ensure the font encoding is standard Unicode. Use natural, flowing Burmese appropriate for the content type (spoken style for scripts, written style for copy). Do NOT just transliterate English idioms, adapt them culturally.";
     case Language.TH:
       return "Write the response in Thai language. Use polite and persuasive Thai appropriate for marketing contexts.";
     case Language.EN:
@@ -63,13 +76,27 @@ const getPillarInstruction = (pillar: ContentPillar): string => {
 };
 
 export const generateCopy = async (request: ContentRequest): Promise<string> => {
-  const { topic, description, framework, language, tone, targetAudience, pillar, brand } = request;
+  const { mode, topic, description, framework, language, tone, targetAudience, pillar, brand } = request;
 
-  const systemInstruction = `You are a world-class copywriter and content strategist.
-Your goal is to write persuasive, high-converting marketing copy.
+  const isScript = mode === AppMode.SCRIPTWRITING;
+
+  const systemInstruction = `You are a world-class ${isScript ? 'Video Scriptwriter and Director' : 'Copywriter and Content Strategist'}.
+Your goal is to write persuasive, high-converting ${isScript ? 'video scripts' : 'marketing copy'}.
 You are fluent in English, Myanmar, and Thai.
-Always format the output using Markdown (headers, bullet points, bold text).
-Do not explain the framework, just use it to structure the content.`;
+Always format the output using Markdown.
+
+${isScript ? `
+FOR SCRIPTWRITING:
+- Use a clear script format.
+- Include [VISUAL] cues in brackets describing what should be seen on screen.
+- Include [AUDIO] or [SPEAKER] cues describing spoken dialogue or sound effects.
+- Include estimated duration for sections if applicable.
+- Write dialogue in a natural, spoken rhythm.
+` : `
+FOR COPYWRITING:
+- Use headers, bullet points, and bold text for readability.
+- Do not explain the framework, just use it to structure the content.
+`}`;
 
   // Construct the Brand Context Block
   const brandContext = brand 
@@ -85,9 +112,9 @@ Do not explain the framework, just use it to structure the content.`;
   const prompt = `
   ${brandContext}
 
-  CONTENT REQUEST:
-  Product/Topic: ${topic}
-  Additional Context/Details: ${description}
+  CONTENT REQUEST (${isScript ? 'VIDEO SCRIPT' : 'WRITTEN COPY'}):
+  Topic: ${topic}
+  Context/Details: ${description}
   Target Audience: ${targetAudience || brand?.defaultAudience || "General Audience"}
   Tone of Voice: ${tone}
   Content Pillar/Theme: ${pillar}
@@ -103,7 +130,7 @@ Do not explain the framework, just use it to structure the content.`;
   
   IMPORTANT RULES:
   - Make it creative and engaging.
-  - If using Myanmar language, ensure it reads naturally to native speakers, not like a machine translation.
+  - If using Myanmar language, ensure it reads naturally to native speakers. ${isScript ? 'For scripts, use spoken/colloquial Burmese grammar.' : ''}
   - Use appropriate emojis for the ${tone} tone and ${pillar} theme.
   - Ensure the content aligns with the Brand Identity provided above.
   `;

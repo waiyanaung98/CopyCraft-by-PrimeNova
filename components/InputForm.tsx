@@ -1,5 +1,5 @@
 import React from 'react';
-import { Language, Tone, ContentRequest, ContentPillar, BrandProfile } from '../types';
+import { Language, Tone, ContentRequest, ContentPillar, BrandProfile, AppMode } from '../types';
 import { TRANSLATIONS, TONE_LABELS, PILLAR_LABELS } from '../constants';
 
 interface InputFormProps {
@@ -17,19 +17,24 @@ export const InputForm: React.FC<InputFormProps> = ({ request, onChange, onSubmi
     onChange({ ...request, [field]: value });
   };
 
+  const isScript = request.mode === AppMode.SCRIPTWRITING;
+
   return (
     <div className="space-y-6 bg-white dark:bg-[#1E2A38] p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
       
       {/* Topic */}
       <div>
         <label className="block text-sm font-bold text-[#1E2A38] dark:text-slate-200 mb-2">
-          {selectedBrand ? `${selectedBrand.name} - ` : ''}{TRANSLATIONS.productTopic[currentUiLang]}
+          {selectedBrand ? `${selectedBrand.name} - ` : ''}
+          {isScript ? TRANSLATIONS.scriptTopic[currentUiLang] : TRANSLATIONS.productTopic[currentUiLang]}
         </label>
         <input
           type="text"
           value={request.topic}
           onChange={(e) => handleChange('topic', e.target.value)}
-          placeholder={currentUiLang === Language.MY ? "ဥပမာ - မြန်မာ့လက်ဖက်ရည်" : "e.g., Wireless Earbuds"}
+          placeholder={currentUiLang === Language.MY 
+            ? (isScript ? "ဥပမာ - ကုန်ပစ္စည်းမိတ်ဆက် ဗီဒီယို" : "ဥပမာ - မြန်မာ့လက်ဖက်ရည်") 
+            : (isScript ? "e.g., Product Unboxing Video" : "e.g., Wireless Earbuds")}
           className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] text-[#1E2A38] dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-[#31d190] focus:border-[#31d190] outline-none transition-all text-sm font-medium"
         />
       </div>
@@ -37,13 +42,15 @@ export const InputForm: React.FC<InputFormProps> = ({ request, onChange, onSubmi
       {/* Description */}
       <div>
         <label className="block text-sm font-bold text-[#1E2A38] dark:text-slate-200 mb-2">
-          {TRANSLATIONS.productDesc[currentUiLang]}
+          {isScript ? TRANSLATIONS.scriptDesc[currentUiLang] : TRANSLATIONS.productDesc[currentUiLang]}
         </label>
         <textarea
           value={request.description}
           onChange={(e) => handleChange('description', e.target.value)}
           rows={4}
-          placeholder={currentUiLang === Language.MY ? "ကုန်ပစ္စည်းအကြောင်းအသေးစိတ်ထည့်ပါ..." : "Describe the key features, specs, or context..."}
+          placeholder={currentUiLang === Language.MY 
+            ? "အကြောင်းအရာအသေးစိတ်ထည့်ပါ..." 
+            : "Describe the key features, specs, or context..."}
           className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#0f172a] text-[#1E2A38] dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-[#31d190] focus:border-[#31d190] outline-none transition-all text-sm font-medium resize-none"
         />
       </div>

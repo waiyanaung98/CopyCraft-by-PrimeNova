@@ -1,22 +1,26 @@
 import React from 'react';
-import { Framework, Language } from '../types';
-import { FRAMEWORK_DETAILS, TRANSLATIONS } from '../constants';
+import { Framework, Language, AppMode } from '../types';
+import { FRAMEWORK_DETAILS, TRANSLATIONS, COPY_FRAMEWORKS_LIST, SCRIPT_FRAMEWORKS_LIST } from '../constants';
 import { CheckCircle2 } from 'lucide-react';
 
 interface FrameworkSelectorProps {
+  mode: AppMode;
   selected: Framework;
   onSelect: (f: Framework) => void;
   currentLang: Language;
 }
 
-export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({ selected, onSelect, currentLang }) => {
+export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({ mode, selected, onSelect, currentLang }) => {
+  
+  const frameworksToShow = mode === AppMode.SCRIPTWRITING ? SCRIPT_FRAMEWORKS_LIST : COPY_FRAMEWORKS_LIST;
+
   return (
     <div className="space-y-3">
       <label className="block text-sm font-bold text-[#1E2A38] dark:text-slate-200">
         {TRANSLATIONS.selectFramework[currentLang]}
       </label>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {(Object.values(Framework) as Framework[]).map((fw) => {
+        {frameworksToShow.map((fw) => {
           const details = FRAMEWORK_DETAILS[fw];
           const Icon = details.icon;
           const isSelected = selected === fw;

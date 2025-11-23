@@ -4,9 +4,10 @@ import { FrameworkSelector } from './components/FrameworkSelector';
 import { InputForm } from './components/InputForm';
 import { OutputDisplay } from './components/OutputDisplay';
 import { BrandManager } from './components/BrandManager';
-import { Language, Framework, Tone, ContentRequest, ContentPillar, BrandProfile } from './types';
+import { Language, Framework, Tone, ContentRequest, ContentPillar, BrandProfile, AppMode } from './types';
 import { generateCopy } from './services/geminiService';
-import { TRANSLATIONS, DEFAULT_BRANDS } from './constants';
+import { TRANSLATIONS, DEFAULT_BRANDS, MODE_LABELS, COPY_FRAMEWORKS_LIST, SCRIPT_FRAMEWORKS_LIST } from './constants';
+import { PenTool, Video } from 'lucide-react';
 
 const App: React.FC = () => {
   // UI Language default to English
@@ -24,6 +25,7 @@ const App: React.FC = () => {
   
   // Form Data
   const [formData, setFormData] = useState<ContentRequest>({
+    mode: AppMode.COPYWRITING,
     topic: '',
     description: '',
     framework: Framework.AIDA,
@@ -75,6 +77,15 @@ const App: React.FC = () => {
     }
   };
 
+  const handleModeChange = (newMode: AppMode) => {
+    setFormData(prev => ({
+      ...prev,
+      mode: newMode,
+      // Reset framework to the first available one for the new mode to avoid type mismatch
+      framework: newMode === AppMode.SCRIPTWRITING ? SCRIPT_FRAMEWORKS_LIST[0] : COPY_FRAMEWORKS_LIST[0]
+    }));
+  };
+
   const handleGenerate = async () => {
     setLoading(true);
     setGeneratedContent(null); // Clear previous while loading
@@ -120,6 +131,34 @@ const App: React.FC = () => {
         {/* Inputs Container - Centered with max width */}
         <div className="max-w-3xl mx-auto space-y-8 mb-12 px-2">
           
+          {/* Mode Switcher */}
+          <section className="flex justify-center mb-6">
+            <div className="bg-white dark:bg-[#1E2A38] p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm inline-flex">
+              <button
+                onClick={() => handleModeChange(AppMode.COPYWRITING)}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
+                  formData.mode === AppMode.COPYWRITING
+                  ? 'bg-[#31d190] text-white shadow-md'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                }`}
+              >
+                <PenTool size={16} />
+                {MODE_LABELS[AppMode.COPYWRITING][uiLanguage]}
+              </button>
+              <button
+                onClick={() => handleModeChange(AppMode.SCRIPTWRITING)}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
+                  formData.mode === AppMode.SCRIPTWRITING
+                  ? 'bg-[#31d190] text-white shadow-md'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Video size={16} />
+                {MODE_LABELS[AppMode.SCRIPTWRITING][uiLanguage]}
+              </button>
+            </div>
+          </section>
+
           {/* Brand Manager Section */}
           <section>
             <BrandManager 
@@ -135,6 +174,7 @@ const App: React.FC = () => {
           {/* Framework Selection */}
           <section>
             <FrameworkSelector 
+              mode={formData.mode}
               selected={formData.framework} 
               onSelect={(fw) => setFormData(prev => ({ ...prev, framework: fw }))}
               currentLang={uiLanguage}
@@ -169,13 +209,15 @@ const App: React.FC = () => {
             /* Empty State Placeholder */
             <div className="max-w-3xl mx-auto bg-white dark:bg-[#1E2A38] rounded-2xl border border-slate-200 dark:border-slate-700 border-dashed flex flex-col items-center justify-center text-center p-12 text-slate-400 dark:text-slate-500 transition-colors">
               <div className="w-16 h-16 bg-slate-50 dark:bg-[#0f172a] rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
+                {formData.mode === AppMode.SCRIPTWRITING ? (
+                   <Video className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+                ) : (
+                   <PenTool className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+                )}
               </div>
               <h3 className="text-lg font-medium text-[#1E2A38] dark:text-white mb-2">Ready to Create</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Generated content will appear here in full screen.
+                Generated {formData.mode === AppMode.SCRIPTWRITING ? 'script' : 'content'} will appear here in full screen.
               </p>
             </div>
           )}
